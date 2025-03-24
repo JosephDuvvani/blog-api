@@ -1,10 +1,5 @@
 import { body, validationResult } from "express-validator";
-import {
-  addUser,
-  emailExists,
-  findUser,
-  usernameExists,
-} from "../models/user.js";
+import models from "../models/index.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -24,7 +19,7 @@ const validateSignup = [
         );
       }
 
-      const exists = await usernameExists(value);
+      const exists = await models.User.usernameExists(value);
 
       if (exists) {
         throw new Error("A user with this username already exists.");
@@ -46,7 +41,7 @@ const validateSignup = [
         );
       }
 
-      const exists = await emailExists(value);
+      const exists = await models.User.emailExists(value);
 
       if (exists) {
         throw new Error("A user with this email already exists.");
@@ -71,7 +66,7 @@ const signupPost = [
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await addUser(username, email, hashedPassword);
+    await models.User.create(username, email, hashedPassword);
 
     const token = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "60",
@@ -113,7 +108,7 @@ const loginPost = [
 
     const { email, password } = req.body;
 
-    const user = await findUser(email);
+    const user = await models.User.findByEmail(email);
 
     if (!user) {
       return res.status(400).json({

@@ -24,7 +24,7 @@ const emailExists = async (email) => {
   return false;
 };
 
-const addUser = async (username, email, password) => {
+const create = async (username, email, password) => {
   await prisma.user.create({
     data: {
       username,
@@ -34,7 +34,7 @@ const addUser = async (username, email, password) => {
   });
 };
 
-const findUser = async (email) => {
+const findByEmail = async (email) => {
   const user = await prisma.user.findUnique({
     where: {
       email,
@@ -44,4 +44,4 @@ const findUser = async (email) => {
   return user;
 };
 
-export { usernameExists, emailExists, addUser, findUser };
+export default { usernameExists, emailExists, create, findByEmail };
