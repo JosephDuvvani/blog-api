@@ -1,3 +1,4 @@
 import auth from "./auth.js";
+import posts from "./posts.js";
 
-export { auth };
+export { auth, posts };
