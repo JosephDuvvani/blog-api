@@ -44,4 +44,20 @@ const findByEmail = async (email) => {
   return user;
 };
 
-export default { usernameExists, emailExists, create, findByEmail };
+const findByUsername = async (username) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  return user;
+};
+
+export default {
+  usernameExists,
+  emailExists,
+  create,
+  findByEmail,
+  findByUsername,
+};
