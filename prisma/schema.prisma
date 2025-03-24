@@ -44,3 +44,8 @@ model Comment {
   authorId  String
   createdAt DateTime @default(now())
 }
+
+model Token {
+  id    String @id @default(uuid())
+  token String @unique
+}
