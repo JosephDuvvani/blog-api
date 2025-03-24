@@ -2,6 +2,7 @@ import { body, validationResult } from "express-validator";
 import models from "../models/index.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import generateAccessToken from "../utils/accessToken.js";
 
 //============= SIGNUP ==============
 
@@ -68,11 +69,14 @@ const signupPost = [
 
     await models.User.create(username, email, hashedPassword);
 
-    const token = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "60",
-    });
+    const accessToken = generateAccessToken({ username });
+    const refreshToken = jwt.sign(
+      { username },
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    models.Token.create(refreshToken);
 
-    res.json({ token });
+    res.json({ accessToken, refreshToken });
   },
 ];
 
@@ -124,14 +128,41 @@ const loginPost = [
       });
     }
 
-    const token = jwt.sign(
+    const accessToken = generateAccessToken({ username: user.username });
+    const refreshToken = jwt.sign(
       { username: user.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "60" }
+      process.env.REFRESH_TOKEN_SECRET
     );
+    models.Token.create(refreshToken);
 
-    res.json({ token });
+    res.json({ accessToken, refreshToken });
   },
 ];
 
-export { signupPost, loginPost };
+const refreshToken = async (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken)
+    return res.status(401).json({
+      errors: [{ msg: "Access Denied: User not logged in." }],
+    });
+
+  const exists = models.Token.exists(refreshToken);
+
+  if (!exists)
+    return res.status(403).json({
+      errors: [{ msg: "Access Denied: Forbidden." }],
+    });
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err)
+      return res.status(403).json({
+        errors: [{ msg: "Access Denied: Forbidden." }],
+      });
+
+    const accessToken = generateAccessToken(user);
+    res.json({ accessToken });
+  });
+};
+
+export { signupPost, loginPost, refreshToken };
