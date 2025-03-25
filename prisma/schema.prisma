@@ -28,7 +28,7 @@ model Post {
   id        String    @id @default(uuid())
   title     String
   content   Json
-  author    User      @relation(fields: [authorId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -38,9 +38,9 @@ model Post {
 model Comment {
   id        String   @id @default(uuid())
   content   Json
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   createdAt DateTime @default(now())
 }
