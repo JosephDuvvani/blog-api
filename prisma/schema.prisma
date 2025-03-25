@@ -22,6 +22,7 @@ model User {
   updatedAt DateTime  @updatedAt
   posts     Post[]
   comments  Comment[]
+  role      Role      @default(USER)
 }
 
 model Post {
@@ -48,4 +49,9 @@ model Comment {
 model Token {
   id    String @id @default(uuid())
   token String @unique
+}
+
+enum Role {
+  USER
+  ADMIN
 }
