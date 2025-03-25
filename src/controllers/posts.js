@@ -24,20 +24,66 @@ const postGet = async (req, res) => {
 
 const postPost = async (req, res) => {
   const { title, content } = req.body;
-  const { username } = req.user;
+  const { id } = req.user;
 
   try {
-    const user = await models.User.findByUsername(username);
-    if (!user)
-      return res
-        .status(403)
-        .json({ errors: [{ msg: "Access Denied: Forbidden" }] });
-
-    const post = await models.Post.create(title, content, user.id);
+    const post = await models.Post.create(title, content, id);
     return res.json({ post });
   } catch (err) {
     return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
   }
 };
 
-export { allPostsGet, postGet, postPost };
+const postTitlePut = async (req, res) => {
+  const { title } = req.body;
+  const { postId } = req.params;
+
+  try {
+    await models.Post.updateTitle(postId, title);
+    return res.status(200).json({
+      message: "Post title updated successfully",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
+const postContentPut = async (req, res) => {
+  const content = req.body;
+  const { postId } = req.params;
+
+  try {
+    await models.Post.updateContent(postId, content);
+    return res.status(200).json({
+      message: "Post content updated successfully",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
+const postDelete = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    await models.Post.destroy(postId);
+
+    return res.status(200).json({
+      message: "Post deleted successfully",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
+export {
+  allPostsGet,
+  postGet,
+  postPost,
+  postTitlePut,
+  postContentPut,
+  postDelete,
+};

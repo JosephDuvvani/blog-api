@@ -44,4 +44,34 @@ const create = async (title, content, authorId) => {
   return post;
 };
 
-export default { findMany, find, create };
+const updateTitle = async (id, title) => {
+  await prisma.post.update({
+    where: {
+      id,
+    },
+    data: {
+      title,
+    },
+  });
+};
+
+const updateContent = async (id, content) => {
+  await prisma.post.update({
+    where: {
+      id,
+    },
+    data: {
+      content,
+    },
+  });
+};
+
+const destroy = async (id) => {
+  await prisma.post.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export default { findMany, find, create, updateTitle, updateContent, destroy };
