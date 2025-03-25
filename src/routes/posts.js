@@ -14,15 +14,16 @@ import {
   commentPost,
   commentPut,
 } from "../controllers/comments.js";
+import checkAdminAuth from "../middleware/checkAdminAuth.js";
 
 const router = Router();
 
 router.get("/", allPostsGet);
-router.post("/", checkAuth, postPost);
+router.post("/", checkAdminAuth, postPost);
 router.get("/:postId", postGet);
-router.put("/:postId/title", checkAuth, postTitlePut);
-router.put("/:postId/content", checkAuth, postContentPut);
-router.delete("/:postId", checkAuth, postDelete);
+router.put("/:postId/title", checkAdminAuth, postTitlePut);
+router.put("/:postId/content", checkAdminAuth, postContentPut);
+router.delete("/:postId", checkAdminAuth, postDelete);
 
 router.get("/:postId/comments", checkAuth, allCommentsGet);
 router.post("/:postId/comments", checkAuth, commentPost);
