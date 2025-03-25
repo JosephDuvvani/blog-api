@@ -128,9 +128,12 @@ const loginPost = [
       });
     }
 
-    const accessToken = generateAccessToken({ username: user.username });
+    const accessToken = generateAccessToken({
+      id: user.id,
+      username: user.username,
+    });
     const refreshToken = jwt.sign(
-      { username: user.username },
+      { id: user.id, username: user.username },
       process.env.REFRESH_TOKEN_SECRET
     );
     models.Token.create(refreshToken);
