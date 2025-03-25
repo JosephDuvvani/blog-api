@@ -67,13 +67,61 @@ const signupPost = [
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await models.User.create(username, email, hashedPassword);
+    const user = await models.User.create(username, email, hashedPassword);
 
-    const accessToken = generateAccessToken({ username });
-    const refreshToken = jwt.sign(
-      { username },
-      process.env.REFRESH_TOKEN_SECRET
+    const payload = {
+      id: user.id,
+      username,
+      role: user.role,
+    };
+
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    models.Token.create(refreshToken);
+
+    res.json({ accessToken, refreshToken });
+  },
+];
+
+const adminSignupPost = [
+  validateSignup,
+  [
+    body("adpass")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Missing code: 'adpass'"),
+  ],
+  async (req, res) => {
+    const results = validationResult(req);
+
+    if (!results.isEmpty()) {
+      return res.status(400).json({ errors: results.errors });
+    }
+
+    const { username, email, password, adpass } = req.body;
+
+    const isPass = adpass === process.env.ADMIN_PASSCODE;
+
+    if (!isPass)
+      return res.status(400).json({ errors: [{ msg: "Passcode failed" }] });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await models.User.create(
+      username,
+      email,
+      hashedPassword,
+      "ADMIN"
     );
+
+    const payload = {
+      id: user.id,
+      username,
+      role: user.role,
+    };
+
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
@@ -128,14 +176,14 @@ const loginPost = [
       });
     }
 
-    const accessToken = generateAccessToken({
+    const payload = {
       id: user.id,
       username: user.username,
-    });
-    const refreshToken = jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.REFRESH_TOKEN_SECRET
-    );
+      role: user.role,
+    };
+    console.log(user);
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
@@ -163,9 +211,12 @@ const refreshToken = async (req, res) => {
         errors: [{ msg: "Access Denied: Forbidden." }],
       });
 
-    const accessToken = generateAccessToken(user);
+    const { id, username, role } = user;
+    const payload = { id, username, role };
+
+    const accessToken = generateAccessToken(payload);
     res.json({ accessToken });
   });
 };
 
-export { signupPost, loginPost, refreshToken };
+export { signupPost, adminSignupPost, loginPost, refreshToken };

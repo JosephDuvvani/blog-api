@@ -24,14 +24,16 @@ const emailExists = async (email) => {
   return false;
 };
 
-const create = async (username, email, password) => {
-  await prisma.user.create({
+const create = async (username, email, password, role = "USER") => {
+  const user = await prisma.user.create({
     data: {
       username,
       email,
       password,
+      role,
     },
   });
+  return user;
 };
 
 const findByEmail = async (email) => {
