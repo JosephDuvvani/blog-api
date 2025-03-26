@@ -198,7 +198,7 @@ const refreshToken = async (req, res) => {
       errors: [{ msg: "Access Denied: User not logged in." }],
     });
 
-  const exists = models.Token.exists(refreshToken);
+  const exists = await models.Token.exists(refreshToken);
 
   if (!exists)
     return res.status(403).json({
