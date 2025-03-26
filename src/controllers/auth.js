@@ -181,7 +181,7 @@ const loginPost = [
       username: user.username,
       role: user.role,
     };
-    console.log(user);
+
     const accessToken = generateAccessToken(payload);
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
     models.Token.create(refreshToken);
