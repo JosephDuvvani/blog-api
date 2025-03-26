@@ -4,10 +4,12 @@ const allCommentsGet = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    const comments = await models.Comment.findMany(postId);
+    const post = await models.Post.find(postId);
 
-    if (!comments)
+    if (!post)
       return res.status(404).json({ errors: [{ msg: "Post Not Found" }] });
+
+    const comments = await models.Comment.findMany(postId);
 
     return res.json({ comments });
   } catch (err) {
