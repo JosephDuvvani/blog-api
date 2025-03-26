@@ -219,4 +219,33 @@ const refreshToken = async (req, res) => {
   });
 };
 
-export { signupPost, adminSignupPost, loginPost, refreshToken };
+const logoutPost = async (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken)
+    return res.status(400).json({ errors: [{ msg: "Provide auth token" }] });
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, user) => {
+      if (err) {
+        return res.status(403).json({
+          errors: [{ msg: "Failure: Forbidden." }],
+        });
+      }
+
+      try {
+        await models.Token.destroy(refreshToken);
+
+        return res
+          .status(200)
+          .json({ message: "User successfully logged out" });
+      } catch (err) {
+        return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+      }
+    }
+  );
+};
+
+export { signupPost, adminSignupPost, loginPost, refreshToken, logoutPost };
