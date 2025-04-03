@@ -7,6 +7,13 @@ const findMany = async (postId) => {
     where: {
       postId,
     },
+    include: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
   });
   return comments;
 };
