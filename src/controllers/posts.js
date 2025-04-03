@@ -9,11 +9,33 @@ const allPostsGet = async (req, res) => {
   }
 };
 
+const allPublishedPostsGet = async (req, res) => {
+  try {
+    const posts = await models.Post.findManyPublished();
+    return res.json({ posts });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
 const postGet = async (req, res) => {
   const { postId } = req.params;
 
   try {
     const post = await models.Post.find(postId);
+
+    if (!post) return res.status(404).json({ errors: [{ msg: "Not Found" }] });
+    return res.json({ post });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
+const publishedPostGet = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const post = await models.Post.findPublished(postId);
 
     if (!post) return res.status(404).json({ errors: [{ msg: "Not Found" }] });
     return res.json({ post });
@@ -81,7 +103,9 @@ const postDelete = async (req, res) => {
 
 export {
   allPostsGet,
+  allPublishedPostsGet,
   postGet,
+  publishedPostGet,
   postPost,
   postTitlePut,
   postContentPut,

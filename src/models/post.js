@@ -16,10 +16,45 @@ const findMany = async () => {
   return posts;
 };
 
+const findManyPublished = async () => {
+  const posts = await prisma.post.findMany({
+    where: {
+      published: true,
+    },
+    include: {
+      authorId: false,
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+  return posts;
+};
+
 const find = async (id) => {
   const post = await prisma.post.findUnique({
     where: {
       id,
+    },
+    include: {
+      authorId: false,
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+  return post;
+};
+
+const findPublished = async (id) => {
+  const post = await prisma.post.findUnique({
+    where: {
+      id,
+      published: true,
     },
     include: {
       authorId: false,
@@ -74,4 +109,13 @@ const destroy = async (id) => {
   });
 };
 
-export default { findMany, find, create, updateTitle, updateContent, destroy };
+export default {
+  findMany,
+  findManyPublished,
+  find,
+  findPublished,
+  create,
+  updateTitle,
+  updateContent,
+  destroy,
+};
