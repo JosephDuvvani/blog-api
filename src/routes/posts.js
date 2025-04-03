@@ -1,11 +1,14 @@
 import { Router } from "express";
 import {
+  allPostsGet,
   allPublishedPostsGet,
   postContentPut,
   postDelete,
+  postGet,
   postPost,
   postTitlePut,
   publishedPostGet,
+  publishPut,
 } from "../controllers/posts.js";
 import checkAuth from "../middleware/checkAuth.js";
 import {
@@ -18,9 +21,12 @@ import checkAdminAuth from "../middleware/checkAdminAuth.js";
 
 const router = Router();
 
+router.get("/admin", checkAdminAuth, allPostsGet);
 router.get("/", allPublishedPostsGet);
 router.post("/", checkAdminAuth, postPost);
 router.get("/:postId", publishedPostGet);
+router.get("/:postId/admin", checkAdminAuth, postGet);
+router.put("/:postId", checkAdminAuth, publishPut);
 router.put("/:postId/title", checkAdminAuth, postTitlePut);
 router.put("/:postId/content", checkAdminAuth, postContentPut);
 router.delete("/:postId", checkAdminAuth, postDelete);

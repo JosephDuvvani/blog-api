@@ -56,6 +56,20 @@ const postPost = async (req, res) => {
   }
 };
 
+const publishPut = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    await models.Post.publish(postId);
+    return res.status(200).json({
+      message: "Post published successfully",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
 const postTitlePut = async (req, res) => {
   const { title } = req.body;
   const { postId } = req.params;
@@ -107,6 +121,7 @@ export {
   postGet,
   publishedPostGet,
   postPost,
+  publishPut,
   postTitlePut,
   postContentPut,
   postDelete,

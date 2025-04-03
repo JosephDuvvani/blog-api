@@ -79,6 +79,18 @@ const create = async (title, content, authorId) => {
   return post;
 };
 
+const publish = async (id) => {
+  const post = await prisma.post.update({
+    where: {
+      id,
+    },
+    data: {
+      published: true,
+    },
+  });
+  return post;
+};
+
 const updateTitle = async (id, title) => {
   await prisma.post.update({
     where: {
@@ -115,6 +127,7 @@ export default {
   find,
   findPublished,
   create,
+  publish,
   updateTitle,
   updateContent,
   destroy,
