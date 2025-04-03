@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   adminSignupPost,
+  loginAdminPost,
   loginPost,
   logoutPost,
   refreshToken,
@@ -10,6 +11,8 @@ import {
 const router = Router();
 
 router.post("/admin/signup", adminSignupPost);
+
+router.post("/admin/login", loginAdminPost);
 
 router.post("/signup", signupPost);
 

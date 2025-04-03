@@ -190,6 +190,49 @@ const loginPost = [
   },
 ];
 
+//Admin Login
+
+const loginAdminPost = [
+  validateLogin,
+  async (req, res) => {
+    const results = validationResult(req);
+
+    if (!results.isEmpty()) {
+      return res.status(400).json({ errors: results.errors });
+    }
+
+    const { email, password } = req.body;
+
+    const user = await models.User.findByEmail(email);
+
+    if (!user || user.role !== "ADMIN") {
+      return res.status(400).json({
+        errors: [{ msg: "Invalid Credentials" }],
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        errors: [{ msg: "Invalid Credentials" }],
+      });
+    }
+
+    const payload = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
+
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    models.Token.create(refreshToken);
+
+    res.json({ accessToken, refreshToken });
+  },
+];
+
 const refreshToken = async (req, res) => {
   const refreshToken = req.body.token;
 
@@ -248,4 +291,11 @@ const logoutPost = async (req, res) => {
   );
 };
 
-export { signupPost, adminSignupPost, loginPost, refreshToken, logoutPost };
+export {
+  signupPost,
+  adminSignupPost,
+  loginPost,
+  loginAdminPost,
+  refreshToken,
+  logoutPost,
+};
