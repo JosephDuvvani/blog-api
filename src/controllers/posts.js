@@ -70,6 +70,20 @@ const publishPut = async (req, res) => {
   }
 };
 
+const unpublishPut = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    await models.Post.unpublish(postId);
+    return res.status(200).json({
+      message: "Post unpublished",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
+  }
+};
+
 const postTitlePut = async (req, res) => {
   const { title } = req.body;
   const { postId } = req.params;
@@ -122,6 +136,7 @@ export {
   publishedPostGet,
   postPost,
   publishPut,
+  unpublishPut,
   postTitlePut,
   postContentPut,
   postDelete,

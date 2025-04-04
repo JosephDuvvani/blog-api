@@ -9,6 +9,7 @@ import {
   postTitlePut,
   publishedPostGet,
   publishPut,
+  unpublishPut,
 } from "../controllers/posts.js";
 import checkAuth from "../middleware/checkAuth.js";
 import {
@@ -26,7 +27,8 @@ router.get("/", allPublishedPostsGet);
 router.post("/", checkAdminAuth, postPost);
 router.get("/:postId", publishedPostGet);
 router.get("/:postId/admin", checkAdminAuth, postGet);
-router.put("/:postId", checkAdminAuth, publishPut);
+router.put("/:postId/publish", checkAdminAuth, publishPut);
+router.put("/:postId/unpublish", checkAdminAuth, unpublishPut);
 router.put("/:postId/title", checkAdminAuth, postTitlePut);
 router.put("/:postId/content", checkAdminAuth, postContentPut);
 router.delete("/:postId", checkAdminAuth, postDelete);
