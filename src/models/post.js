@@ -68,12 +68,13 @@ const findPublished = async (id) => {
   return post;
 };
 
-const create = async (title, content, authorId) => {
+const create = async ({title, caption, body, author}) => {
   const post = await prisma.post.create({
     data: {
       title,
-      content,
-      authorId,
+      caption,
+      body,
+      authorId: author,
     },
   });
   return post;

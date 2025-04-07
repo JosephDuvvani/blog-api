@@ -45,12 +45,19 @@ const publishedPostGet = async (req, res) => {
 };
 
 const postPost = async (req, res) => {
-  const { title, content } = req.body;
-  const { id } = req.user;
-
   try {
-    const post = await models.Post.create(title, content, id);
-    return res.json({ post });
+    const post = {
+      title: 'Sample title',
+      caption: 'Sample caption',
+      body: {
+        type: 'doc',
+        content: []
+      },
+      author: req.user.id
+    }
+
+    const createdPost = await models.Post.create(post);
+    return res.json({ createdPost });
   } catch (err) {
     return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
   }
