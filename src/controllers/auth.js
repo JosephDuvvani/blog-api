@@ -76,7 +76,9 @@ const signupPost = [
     };
 
     const accessToken = generateAccessToken(payload);
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
@@ -121,7 +123,9 @@ const adminSignupPost = [
     };
 
     const accessToken = generateAccessToken(payload);
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
@@ -183,7 +187,9 @@ const loginPost = [
     };
 
     const accessToken = generateAccessToken(payload);
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
@@ -226,7 +232,9 @@ const loginAdminPost = [
     };
 
     const accessToken = generateAccessToken(payload);
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
     models.Token.create(refreshToken);
 
     res.json({ accessToken, refreshToken });
