@@ -91,31 +91,13 @@ const unpublishPut = async (req, res) => {
   }
 };
 
-const postTitlePut = async (req, res) => {
-  const { title } = req.body;
-  const { postId } = req.params;
-
-  try {
-    await models.Post.updateTitle(postId, title);
-    return res.status(200).json({
-      message: "Post title updated successfully",
-      user: req.user,
-    });
-  } catch (err) {
-    return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
-  }
-};
-
-const postContentPut = async (req, res) => {
+const contentPut = async (req, res) => {
   const content = req.body;
   const { postId } = req.params;
 
   try {
-    await models.Post.updateContent(postId, content);
-    return res.status(200).json({
-      message: "Post content updated successfully",
-      user: req.user,
-    });
+    const updatedPost = await models.Post.updateContent(postId, content);
+    return res.status(200).json({updatedPost});
   } catch (err) {
     return res.status(500).json({ errors: [{ msg: "Internal Error" }] });
   }
@@ -144,7 +126,6 @@ export {
   postPost,
   publishPut,
   unpublishPut,
-  postTitlePut,
-  postContentPut,
+  contentPut,
   postDelete,
 };

@@ -12,6 +12,9 @@ const findMany = async () => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
   return posts;
 };
@@ -29,6 +32,9 @@ const findManyPublished = async () => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
   return posts;
 };
@@ -104,26 +110,18 @@ const unpublish = async (id) => {
   return post;
 };
 
-const updateTitle = async (id, title) => {
-  await prisma.post.update({
+const updateContent = async (id, {title, caption, body}) => {
+  const post = await prisma.post.update({
     where: {
       id,
     },
     data: {
       title,
+      caption,
+      body,
     },
   });
-};
-
-const updateContent = async (id, content) => {
-  await prisma.post.update({
-    where: {
-      id,
-    },
-    data: {
-      content,
-    },
-  });
+  return post;
 };
 
 const destroy = async (id) => {
@@ -142,7 +140,6 @@ export default {
   create,
   publish,
   unpublish,
-  updateTitle,
   updateContent,
   destroy,
 };

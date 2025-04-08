@@ -2,11 +2,10 @@ import { Router } from "express";
 import {
   allPostsGet,
   allPublishedPostsGet,
-  postContentPut,
+  contentPut,
   postDelete,
   postGet,
   postPost,
-  postTitlePut,
   publishedPostGet,
   publishPut,
   unpublishPut,
@@ -29,8 +28,7 @@ router.get("/:postId", publishedPostGet);
 router.get("/:postId/admin", checkAdminAuth, postGet);
 router.put("/:postId/publish", checkAdminAuth, publishPut);
 router.put("/:postId/unpublish", checkAdminAuth, unpublishPut);
-router.put("/:postId/title", checkAdminAuth, postTitlePut);
-router.put("/:postId/content", checkAdminAuth, postContentPut);
+router.put("/:postId/edit", checkAdminAuth, contentPut);
 router.delete("/:postId", checkAdminAuth, postDelete);
 
 router.get("/:postId/comments", checkAuth, allCommentsGet);
